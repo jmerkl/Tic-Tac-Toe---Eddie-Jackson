@@ -240,6 +240,8 @@ public class MainWindow extends Application {
 						buttonList.get(i).button().setText("");
 					}
 
+					int[][] boardArray = boardToMatrix(buttonList);
+
 				//Edit bottom panel
 					turnLabel.setText("Player 1 (X) to move!");
 
@@ -249,7 +251,7 @@ public class MainWindow extends Application {
 							humanPlyr = "Player 2";
 							compPlyr = "Player 1";
 						}
-						//initializeAI(humanPlyr);
+						initializeAI(humanPlyr);
 					}
 			});
 	}
@@ -295,19 +297,24 @@ public class MainWindow extends Application {
 			turnLabel.setText("Player 1 (X) Wins!");
 			for (int i = 0; i < buttonList.size(); i++) {
 				buttonList.get(i).button().setDisable(true);
+				buttonList.get(i).setTurnTrack(false);
 			}
 		} else if ((a.equals("OOO")) || (b.equals("OOO")) || (c.equals("OOO")) || (d.equals("OOO")) || (e.equals("OOO")) || (f.equals("OOO")) || (g.equals("OOO")) || (h.equals("OOO"))) {
 			oWins = true;
 			turnLabel.setText("Player 2 (O) Wins!");
 			for (int i = 0; i < buttonList.size(); i++) {
 				buttonList.get(i).button().setDisable(true);
+				buttonList.get(i).setTurnTrack(false);
 			}
-		} else if (getIncrement() == 9) {
+		} else if (getIncrement() == 8) {
 			tie = true;
 			turnLabel.setText("It's a Tie!");
 			for (int i = 0; i < buttonList.size(); i++) {
 				buttonList.get(i).button().setDisable(true);
+				buttonList.get(i).setTurnTrack(false);
 			}
+		} else {
+			int[][] boardArray = boardToMatrix(buttonList);
 		}
 
 	}
@@ -337,7 +344,12 @@ public class MainWindow extends Application {
 		return boardArray;
 	}
 
-	public static void intializeAI(String human) {
+	//AI Interface Methods
+	public static void initializeAI(String human) {
 		enableAI = true;
+	}
+
+	public static int[][] nextMoveAI(int[][] boardArray) {
+		return null;
 	}
 }

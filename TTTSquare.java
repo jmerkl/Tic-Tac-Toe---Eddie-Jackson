@@ -37,6 +37,10 @@ public class TTTSquare {
 		return turnTracker;
 	}
 
+	public void setTurnTrack(boolean turn) {
+		turnTracker = turn;
+	}
+
 	public void clear() {
 		filled = false;
 		square.setText("");
