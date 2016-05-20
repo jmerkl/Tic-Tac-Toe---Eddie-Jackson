@@ -14,7 +14,7 @@ public class User {
     public User(){}
     
     public User(int choice){
-        input1= choice;
+        input1 = choice;
         decide(choice);
     
     }
