@@ -35,9 +35,13 @@ public class MainWindow extends Application {
 
 	public static int ct = 1;
 	public static boolean enableAI = false;
+	public static boolean compMoved = false;
 	public static String humanPlyr = "Player 1";
 	public static String compPlyr = "Player 2";
+	public static String movingPlyr;
+	public static String difficulty = "Easy";
 	public static ArrayList<TTTSquare> buttonList = new ArrayList<TTTSquare>();
+	public static int[][] boardArray = new int[3][3];
 	public static Text turnLabel = new Text("Start a New Game to Play");
 
 	public static void main(String[] args) {
@@ -250,8 +254,11 @@ public class MainWindow extends Application {
 						if (playerTwoBtn.isSelected()) {
 							humanPlyr = "Player 2";
 							compPlyr = "Player 1";
+							//Perform first move
+							difficulty = difficultyBox.getValue().toString();
+							computerMoveSequence();
 						}
-						initializeAI(humanPlyr);
+						enableComp(true);
 					}
 			});
 	}
@@ -270,6 +277,9 @@ public class MainWindow extends Application {
 
 	public static void makeTurnChanges(Text turnLabel, boolean turnTracker) {
 		turnLabel.setText(turnTracker ? "Player 2 (O) to move!" : "Player 1 (X) to move!");
+		movingPlyr = turnTracker ? "Player 2" : "Player 1";
+		boardArray = boardToMatrix(buttonList);
+		increment();
 	}
 
 	public static void evalBoard(Text turnLabel) {
@@ -316,21 +326,23 @@ public class MainWindow extends Application {
 		} else {
 			int[][] boardArray = boardToMatrix(buttonList);
 		}
-
 	}
 
 	public static int[][] boardToMatrix(ArrayList<TTTSquare> buttonList) {
-		int[][] boardArray = new int[3][3];
+		String[][] boardSymbols = new String[3][3];
 		int j = 0;
 		int k = 0;
 		for (int i = 0; i < buttonList.size(); i++) {
 			String marker = buttonList.get(i).button().getText();
 			if (marker.equals("X")) {
 				boardArray[j][k] = 1;
+				boardSymbols[j][k] = "X";
 			} else if (marker.equals("O")) {
 				boardArray[j][k] = 0;
+				boardSymbols[j][k] = "O";
 			} else {
 				boardArray[j][k] = -1;
+				boardSymbols[j][k] = " ";
 			}
 			
 			//Bump to the next column
@@ -340,16 +352,76 @@ public class MainWindow extends Application {
 				j = 0;
 			}
 		}
+		/*  USE FOR DEBUGGING: Prints out the board on command prompt to show the array is correct
+		System.out.println("");
+		for (int i = 0; i < 3; i++) {
+			System.out.println(boardSymbols[i][0] + "|" + boardSymbols[i][1] + "|" + boardSymbols[i][2]);
+		}
+		*/
 
 		return boardArray;
 	}
 
-	//AI Interface Methods
-	public static void initializeAI(String human) {
-		enableAI = true;
+	public static ArrayList<TTTSquare> matrixToBoard(int[][] boardArray, ArrayList<TTTSquare> buttonList) {
+		int ct = 0; //Total counter
+		int rows = boardArray.length;
+		int cols = boardArray[0].length;
+		for (int r = 0; r < rows; r++) {
+			for (int c = 0; c < cols; c++) {
+				int val = boardArray[r][c];
+				if (val == 0) {
+					buttonList.get(ct).button().setText("O");
+				} else if (val == 1) {
+					buttonList.get(ct).button().setText("X");
+				} else {
+					buttonList.get(ct).button().setText("");
+				}
+				ct = ct + 1;
+			}
+		}
+		return buttonList;
 	}
 
-	public static int[][] nextMoveAI(int[][] boardArray) {
-		return null;
+	public static ArrayList<TTTSquare> getButtonList() {
+		return buttonList;
+	}
+
+	public static int[][] getBoardArray() {
+		return boardArray;
+	}
+
+	public static void computerMoveSequence() {
+		Computer computer = new Computer(compPlyr, difficulty);
+		int[][] nextBoardArray = new int[3][3];
+
+		nextBoardArray = computer.calcMove(boardArray);
+
+		int counter = 0;
+		boolean moved = true;
+		for (int r = 0; r < 3; r++) {
+			for (int c = 0; c < 3; c++) {
+				int boardVal = boardArray[r][c];
+				int nextVal = nextBoardArray[r][c];
+				if ((boardVal == nextVal) && moved) {
+					buttonList.get(counter).button().fire();
+					System.out.println(counter);
+					moved = false;
+					System.out.println("Fired");
+				}
+				counter = counter + 1;
+			}
+		}
+	}
+
+	public static void enableComp(boolean enabled) {
+		enableAI = enabled;
+	}
+
+	public static boolean getEnabled() {
+		return enableAI;
+	}
+
+	public static boolean isCompPlaying() {
+		return (compPlyr.equals(movingPlyr));
 	}
 }

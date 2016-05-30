@@ -20,6 +20,11 @@ public class TTTSquare {
 				turnTracker = turnTracker ? false : true;
 				MainWindow.makeTurnChanges(turnLabel, turnTracker);
 				MainWindow.evalBoard(turnLabel);
+				if (MainWindow.enableAI) {
+					if (MainWindow.isCompPlaying()) {
+						MainWindow.computerMoveSequence();
+					}
+				}
 			}
 			
 		});
