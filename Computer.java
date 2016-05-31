@@ -7,7 +7,9 @@ public class Computer {
 	private int compNum;
 	private int rowSize = 3;
 	private int colSize = 3;
+	private int listCounter;
 	private Random rn = new Random();
+	private int[] coords = new int[2];
 	private int[][] modBoard = new int[rowSize][colSize]; //Modified tic tac toe board
 
 	Computer(String playerNumber, String difficulty) {
@@ -22,22 +24,22 @@ public class Computer {
 
 	public int[][] calcMove(int[][] boardArray) {
 
+		modBoard = boardArray;
 		Move move = checkThree(boardArray);
 		if (move.getCheckThree()) {
-			boardArray = move.getBoardArray();
+			modBoard = move.getBoardArray();
 		} else {
 			boolean interfere = true;
 			while (interfere) {
 				int r = rn.nextInt(rowSize);
 				int c = rn.nextInt(colSize);
-				if ((boardArray[r][c] == -1)) {
+				if ((modBoard[r][c] == -1)) {
 					modBoard[r][c] = compNum;
 					interfere = false;
-					String[][] symbolModBoard = convSymbol(boardArray);
-					System.out.println(symbolModBoard[0][0] + "|" + symbolModBoard[0][1] + "|" + symbolModBoard[0][2]);
-					System.out.println(symbolModBoard[1][0] + "|" + symbolModBoard[1][1] + "|" + symbolModBoard[1][2]);
-					System.out.println(symbolModBoard[2][0] + "|" + symbolModBoard[2][1] + "|" + symbolModBoard[2][2]);
-					System.out.println();
+
+					listCounter = r + (c * 3);
+					coords[0] = r;
+					coords[1] = c;
 				}
 			}
 		}
@@ -58,8 +60,8 @@ public class Computer {
 		String dgl2 = boardSymbols[0][2] + boardSymbols[1][1] + boardSymbols[2][0];
 
 		boolean isThree = false;
-		int[] coords = new int[2];
 		coords[0] = -1; //Initialize the value to a non-altered default
+		coords[1] = -1;
 			//Determine combinations of Three
 				//Row 1
 				if (row1.equals(" OO") || row1.equals(" XX")) {
@@ -189,6 +191,18 @@ public class Computer {
 		return playerNumber;
 	}
 
+	public int getListCounter() {
+		return (coords[0] + (coords[1] * 3));
+	}
+
+	public int getRow() {
+		return coords[0];
+	}
+
+	public int getCol() {
+		return coords[1];
+	}
+
 	public void setPlayerNumber(String newPlayerNum) {
 		playerNumber = newPlayerNum;
 		if (playerNumber.equals("Player 1")) {
@@ -209,8 +223,8 @@ class Move {
 	private int[][] boardArray;
 
 	public Move(boolean checkThree, int[][] boardArray) {
-		checkThree = this.checkThree;
-		boardArray = this.boardArray;
+		this.checkThree = checkThree;
+		this.boardArray = boardArray;
 	}
 
 	public Move(boolean checkThree) {

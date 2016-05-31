@@ -254,6 +254,7 @@ public class MainWindow extends Application {
 						if (playerTwoBtn.isSelected()) {
 							humanPlyr = "Player 2";
 							compPlyr = "Player 1";
+							
 							//Perform first move
 							difficulty = difficultyBox.getValue().toString();
 							computerMoveSequence();
@@ -391,26 +392,10 @@ public class MainWindow extends Application {
 	}
 
 	public static void computerMoveSequence() {
+		//Insert AI Algorithm call here
 		Computer computer = new Computer(compPlyr, difficulty);
-		int[][] nextBoardArray = new int[3][3];
-
-		nextBoardArray = computer.calcMove(boardArray);
-
-		int counter = 0;
-		boolean moved = true;
-		for (int r = 0; r < 3; r++) {
-			for (int c = 0; c < 3; c++) {
-				int boardVal = boardArray[r][c];
-				int nextVal = nextBoardArray[r][c];
-				if ((boardVal == nextVal) && moved) {
-					buttonList.get(counter).button().fire();
-					System.out.println(counter);
-					moved = false;
-					System.out.println("Fired");
-				}
-				counter = counter + 1;
-			}
-		}
+		boardArray = computer.calcMove(boardArray);
+		buttonList.get(computer.getListCounter()).button().fire();
 	}
 
 	public static void enableComp(boolean enabled) {
